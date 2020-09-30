@@ -514,6 +514,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                 switchToSession(getStoredCurrentSessionOrLast());
             }
         }
+
+        bindServiceWithTerminalView();
     }
 
     public void switchToSession(boolean forward) {
@@ -928,5 +930,17 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             switchToSession(service.getSessions().get(index));
         }
     }
+
+    /**
+     * @Author: Rezaur Rahman
+     * @Date 09-27-20
+     * @Version 0.99
+     * To Bind TermuxService with TerminalView.
+     */
+    private void bindServiceWithTerminalView() {
+        System.out.println("reza binding");
+        mTermService.setTerminalView(mTerminalView);
+    }
+
 
 }

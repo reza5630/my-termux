@@ -25,6 +25,7 @@ import com.termux.R;
 import com.termux.terminal.EmulatorDebug;
 import com.termux.terminal.TerminalSession;
 import com.termux.terminal.TerminalSession.SessionChangedCallback;
+import com.termux.view.TerminalView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -100,6 +101,7 @@ public final class TermuxService extends Service implements SessionChangedCallba
         String action = intent.getAction();
         if (ACTION_STOP_SERVICE.equals(action)) {
             mWantsToStop = true;
+            killAllServers();
             for (int i = 0; i < mTerminalSessions.size(); i++)
                 mTerminalSessions.get(i).finishIfRunning();
             stopSelf();
@@ -390,4 +392,35 @@ public final class TermuxService extends Service implements SessionChangedCallba
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.createNotificationChannel(channel);
     }
+
+    /**
+     * @Author: Rezaur Rahman
+     * @Date 09-27-20
+     * @Version 0.99
+     * TerminalView Binder with TermuxService.
+     */
+    TerminalView terminalView;
+    public void setTerminalView(TerminalView mTerminalView) {
+        terminalView = mTerminalView;
+        System.out.println("reza bind successful "+terminalView);
+    }
+
+    /**
+     * @Author: Rezaur Rahman
+     * @Date 09-27-20
+     * @Version 0.99
+     * This function sends command to kill all available web and DB servers and puts the thread to sleep for .5s just to get enough time .
+     */
+    private void killAllServers() {
+        System.out.println("reza killing web and db server");
+        try {
+            terminalView.exeToTerminal("killall httpd\n");
+            terminalView.exeToTerminal("killall mysqld\n");
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+
 }
